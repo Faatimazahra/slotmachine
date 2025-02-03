@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Machine Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+
+        .slot-machine {
+            text-align: center;
+            border: 2px solid #333;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: white;
+        }
+
+        .reels {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #E90074;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #d60067;
+        }
+
+        #result {
+            font-size: 20px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="slot-machine">
+        <div class="reels">
+            <span id="reel1">🍒</span>
+            <span id="reel2">🍒</span>
+            <span id="reel3">🍒</span>
+        </div>
+        <button id="spinBtn">Spin</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const symbols = ["🍒", "🍋", "🍉", "🍇", "🔔"];
+        const spinBtn = document.getElementById("spinBtn");
+        const reel1 = document.getElementById("reel1");
+        const reel2 = document.getElementById("reel2");
+        const reel3 = document.getElementById("reel3");
+        const result = document.getElementById("result");
+
+        function spin() {
+            // Randomly pick a symbol for each reel
+            const random1 = symbols[Math.floor(Math.random() * symbols.length)];
+            const random2 = symbols[Math.floor(Math.random() * symbols.length)];
+            const random3 = symbols[Math.floor(Math.random() * symbols.length)];
+
+            // Update the reels with the new symbols
+            reel1.textContent = random1;
+            reel2.textContent = random2;
+            reel3.textContent = random3;
+
+            // Check if all three symbols match
+            if (random1 === random2 && random2 === random3) {
+                result.textContent = "You win! 🎉";
+            } else {
+                result.textContent = "Try again!";
+            }
+        }
+
+        // Event listener for the spin button
+        spinBtn.addEventListener("click", spin);
+    </script>
+</body>
+</html>

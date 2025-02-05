@@ -1,94 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slot Machine Game</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            margin: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Machine</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(45deg, #f8c0dc, #4b6cb7);
+      animation: gradientShift 8s ease infinite, backgroundFlash 1s ease infinite;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .slot-machine {
-            text-align: center;
-            border: 2px solid #333;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: white;
-        }
+    @keyframes backgroundFlash {
+      0% { background: linear-gradient(45deg, #f8c0dc, #4b6cb7); }
+      25% { background: linear-gradient(45deg, #ff7b9c, #a7c9e8); }
+      50% { background: linear-gradient(45deg, #ffd700, #ff6e6e); }
+      75% { background: linear-gradient(45deg, #ffeb3b, #ff7c85); }
+      100% { background: linear-gradient(45deg, #f8c0dc, #4b6cb7); }
+    }
 
-        .reels {
-            font-size: 40px;
-            margin-bottom: 20px;
-        }
+    @keyframes gradientShift {
+      0% { background: linear-gradient(45deg, #f8c0dc, #4b6cb7); }
+      50% { background: linear-gradient(45deg, #ffb6c1, #f6a2d9); }
+      100% { background: linear-gradient(45deg, #f8c0dc, #4b6cb7); }
+    }
 
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            background-color: #E90074;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+    .container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap; /* Allows content to wrap on small screens */
+      justify-content: center;
+    }
 
-        button:hover {
-            background-color: #d60067;
-        }
+    .slot-machine {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
 
-        #result {
-            font-size: 20px;
-            margin-top: 20px;
-            font-weight: bold;
-        }
-    </style>
+    .reel {
+      width: 400px;
+      height: 400px;
+      background-color: #41a739;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 15px;
+      border: 5px solid #fff;
+      position: relative;
+      animation: flashBorder 1s infinite alternate;
+      margin-right: 20px;
+    }
+
+    .reel img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    #lever {
+      position: absolute;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 20px 40px;
+      font-size: 28px;
+      cursor: pointer;
+      background-color: #41a739;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      z-index: 2;
+      box-shadow: 0 0 20px #f044d9;
+      transition: transform 0.3s ease;
+    }
+
+    #lever:active {
+      transform: translateX(-50%) rotate(45deg);
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      z-index: 1;
+      text-align: center;
+    }
+
+    #result.win {
+      color: #dd0d7b;
+    }
+
+    #result.lose {
+      color: #dd0d7b;
+    }
+
+    @keyframes flashBorder {
+      0% { border-color: #ff7300; }
+      50% { border-color: #41a739; }
+      100% { border-color: #ff7300; }
+    }
+
+    @keyframes sparkle {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.5); opacity: 1; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    .sparkle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      background-color: #dc36b2;
+      border-radius: 70%;
+      animation: sparkle 1.5s infinite;
+      animation-delay: calc(0.2s * var(--i));
+      display: none;
+    }
+
+    .win .sparkle {
+      display: block;
+    }
+
+    .reel .sparkle:nth-child(1) { --i: 1; top: 5%; left: 10%; }
+    .reel .sparkle:nth-child(2) { --i: 2; top: 15%; left: 80%; }
+    .reel .sparkle:nth-child(3) { --i: 3; top: 30%; left: 50%; }
+    .reel .sparkle:nth-child(4) { --i: 4; top: 50%; left: 30%; }
+    .reel .sparkle:nth-child(5) { --i: 5; top: 70%; left: 70%; }
+
+    @media (max-width: 768px) {
+      .reel {
+        width: 300px;
+        height: 120px;
+      }
+      #lever {
+        font-size: 24px;
+        padding: 15px 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .reel {
+        width: 100px;
+        height: 100px;
+      }
+      #lever {
+        font-size: 20px;
+        padding: 15px 30px;
+        margin-top: 200px;
+      }
+    }
+  </style>
 </head>
 <body>
+
+  <div class="container">
     <div class="slot-machine">
-        <div class="reels">
-            <span id="reel1">🍒</span>
-            <span id="reel2">🍒</span>
-            <span id="reel3">🍒</span>
-        </div>
-        <button id="spinBtn">Spin</button>
-        <div id="result"></div>
+      <div class="reel" id="reel1">
+        <img src="1.png" alt="Reel Image">
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+      </div>
+      <div class="reel" id="reel2">
+        <img src="2.png" alt="Reel Image">
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+      </div>
+      <div class="reel" id="reel3">
+        <img src="3.png" alt="Reel Image">
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+      </div>
     </div>
+    <button id="lever">Pull the Lever!</button>
+  </div>
 
-    <script>
-        const symbols = ["🍒", "🍋", "🍉", "🍇", "🔔"];
-        const spinBtn = document.getElementById("spinBtn");
-        const reel1 = document.getElementById("reel1");
-        const reel2 = document.getElementById("reel2");
-        const reel3 = document.getElementById("reel3");
-        const result = document.getElementById("result");
+  <div id="result"></div>
 
-        function spin() {
-            // Randomly pick a symbol for each reel
-            const random1 = symbols[Math.floor(Math.random() * symbols.length)];
-            const random2 = symbols[Math.floor(Math.random() * symbols.length)];
-            const random3 = symbols[Math.floor(Math.random() * symbols.length)];
+  <script>
+    const leverButton = document.getElementById('lever');
+    const images = ['1.png', '2.png', '3.png', '4.png', '5.png', '6.png', '7.png'];
+    let spinCount = 0; // Spin counter
 
-            // Update the reels with the new symbols
-            reel1.textContent = random1;
-            reel2.textContent = random2;
-            reel3.textContent = random3;
+    function getRandomImage() {
+      return images[Math.floor(Math.random() * images.length)];
+    }
 
-            // Check if all three symbols match
-            if (random1 === random2 && random2 === random3) {
-                result.textContent = "You win! 🎉";
-            } else {
-                result.textContent = "Try again!";
-            }
+    function startScrolling() {
+      const reel1 = document.getElementById('reel1').querySelector('img');
+      const reel2 = document.getElementById('reel2').querySelector('img');
+      const reel3 = document.getElementById('reel3').querySelector('img');
+
+      let count = 0;
+      let scrollLimit = 10;
+      const interval = 100;
+
+      const scrollReels = setInterval(() => {
+        reel1.src = getRandomImage();
+        reel2.src = getRandomImage();
+        reel3.src = getRandomImage();
+        count++;
+
+        if (count === scrollLimit) {
+          clearInterval(scrollReels);
+          matchReels();
         }
+      }, interval);
+    }
 
-        // Event listener for the spin button
-        spinBtn.addEventListener("click", spin);
-    </script>
+    function matchReels() {
+      const reel1 = document.getElementById('reel1').querySelector('img');
+      const reel2 = document.getElementById('reel2').querySelector('img');
+      const reel3 = document.getElementById('reel3').querySelector('img');
+      const result = document.getElementById('result');
+      const reels = document.querySelectorAll('.reel');
+
+      spinCount++;
+
+      if (spinCount % 7 === 0) { // Every 7th spin
+        let winningImage = getRandomImage();
+        reel1.src = reel2.src = reel3.src = winningImage;
+        result.textContent = '🎉 You Win! 🎉';
+        result.classList.add('win');
+        result.classList.remove('lose');
+
+        // Show sparkles
+        reels.forEach(reel => reel.classList.add('win'));
+      } else {
+        reel1.src = getRandomImage();
+        reel2.src = getRandomImage();
+        reel3.src = getRandomImage();
+        result.textContent = '😞 Try Again';
+        result.classList.add('lose');
+        result.classList.remove('win');
+
+        // Hide sparkles
+        reels.forEach(reel => reel.classList.remove('win'));
+      }
+    }
+
+    function spinReels() {
+      startScrolling();
+      document.getElementById('result').textContent = '';
+    }
+
+    leverButton.addEventListener('click', spinReels);
+  </script>
+
 </body>
 </html>
